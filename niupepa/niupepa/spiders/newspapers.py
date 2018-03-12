@@ -65,14 +65,16 @@ class NewspapersSpider(scrapy.Spider):
             .extract()
         )
 
+        output_dict = dict(text = page_text, url = response.url)
+        output_dict.update(response.meta)
+
         if len(next_link) > 0:
             # There is a next page link to follow
             yield scrapy.Request(
                 url = urljoin(self.nzdl_base_url, next_link[0]),
+                meta = output_dict,
                 callback = self.parse_issue)
         else:
-            output_dict = dict(text = page_text, url = response.url)
-            output_dict.update(response.meta)
             yield output_dict
 
         
